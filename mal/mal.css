@@ -1,4 +1,4 @@
-/* mal-ds v1.0.18 · https://franciscombp.github.io/ds/ */
+/* mal-ds v1.0.19 · https://franciscombp.github.io/ds/ */
 /* ══════════════════════════════════════════════════════════════
    MAL DESIGN SYSTEM · v2
    https://franciscombp.github.io/ds/mal/mal.css
@@ -630,8 +630,12 @@ p{text-wrap:pretty}
 .prosa{max-width:68ch}
 
 /* ─── cabecera ────────────────────────────────────────────── */
+/* Con viewport-fit=cover la barra sube hasta el borde de la pantalla y rellena
+   la zona de la barra de estado: sin esto, en iOS el contenido se ve pasar por
+   encima de la cabecera al hacer scroll. Sin cover, el inset vale 0. */
 .hud{
   position:sticky;top:0;z-index:50;border-bottom:var(--mal-separador);
+  padding-top:env(safe-area-inset-top, 0px);
   background:var(--mal-relleno-barra);
   -webkit-backdrop-filter:var(--mal-vidrio-barra);backdrop-filter:var(--mal-vidrio-barra);
 }
@@ -648,7 +652,10 @@ p{text-wrap:pretty}
 .hud nav a:hover,.hud nav a[aria-current]{color:var(--mal-ink);border-bottom-color:var(--mal-rojo)}
 @media (max-width:640px){
   .hud__in{flex-wrap:wrap;row-gap:.25rem}
-  .hud nav{width:100%;overflow-x:auto;scrollbar-width:none;padding-bottom:.15rem}
+  /* Si el menú no cabe, se desplaza; el borde derecho se desvanece para que se
+     note que sigue, en vez de verse cortado a media palabra. */
+  .hud nav{width:100%;overflow-x:auto;scrollbar-width:none;padding-bottom:.15rem;padding-right:2rem;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.5rem),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 2.5rem),transparent)}
   .hud nav::-webkit-scrollbar{display:none}
 }
 
