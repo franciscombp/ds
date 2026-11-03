@@ -1,4 +1,4 @@
-/* mal-ds v1.0.20 · https://franciscombp.github.io/ds/ */
+/* mal-ds v1.0.21 · https://franciscombp.github.io/ds/ */
 /* ══════════════════════════════════════════════════════════════
    MAL DESIGN SYSTEM · v2
    https://franciscombp.github.io/ds/mal/mal.css
@@ -636,9 +636,13 @@ p{text-wrap:pretty}
 .hud{
   position:sticky;top:0;z-index:50;border-bottom:var(--mal-separador);
   padding-top:env(safe-area-inset-top, 0px);
-  background:var(--mal-relleno-barra);
-  -webkit-backdrop-filter:var(--mal-vidrio-barra);backdrop-filter:var(--mal-vidrio-barra);
+  /* Opaca: con el vidrio el texto se leía a través de la barra al hacer scroll. */
+  background:var(--mal-bg);
 }
+/* En iOS 26 Safari dibuja la página también debajo de la barra de estado, y
+   la cabecera fija empieza justo después: el texto asomaba por encima. Este
+   faldón sube el fondo de la cabecera hasta el borde de la pantalla. */
+.hud::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:100vh;background:inherit;pointer-events:none}
 .hud__in{
   display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.75rem;
   font-family:var(--mal-mono);font-size:var(--mal-t-micro);letter-spacing:.14em;text-transform:uppercase;
