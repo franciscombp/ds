@@ -1,4 +1,4 @@
-/* mal-ds v1.0.19 · https://franciscombp.github.io/ds/ */
+/* mal-ds v1.0.20 · https://franciscombp.github.io/ds/ */
 /* ══════════════════════════════════════════════════════════════
    MAL DESIGN SYSTEM · v2
    https://franciscombp.github.io/ds/mal/mal.css
@@ -652,9 +652,10 @@ p{text-wrap:pretty}
 .hud nav a:hover,.hud nav a[aria-current]{color:var(--mal-ink);border-bottom-color:var(--mal-rojo)}
 @media (max-width:640px){
   .hud__in{flex-wrap:wrap;row-gap:.25rem}
-  /* Si el menú no cabe, baja a una segunda línea: desplazarlo dejaba la
-     última entrada cortada a media palabra. */
-  .hud nav{width:100%;flex-wrap:wrap;column-gap:1.1rem;row-gap:.1rem;padding-bottom:.15rem}
+  /* Si el menú no cabe, se desplaza en una sola línea; el borde derecho se
+     desvanece para que se note que sigue. */
+  .hud nav{width:100%;overflow-x:auto;scrollbar-width:none;padding-bottom:.15rem;padding-right:2rem;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 2.5rem),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 2.5rem),transparent)}
   .hud nav::-webkit-scrollbar{display:none}
 }
 
