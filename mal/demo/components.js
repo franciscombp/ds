@@ -812,7 +812,7 @@ async function initBlogFetch() {
               
               <div class="author-meta">
                   <div class="author-avatar">
-                      <img src="assets/fran.jpeg" alt="Francisco Maldonado">
+                      <img src="../../img/demo/fran.jpeg" alt="Francisco Maldonado">
                   </div>
                   <div class="author-info">
                       <span class="author-name">Francisco Maldonado</span>

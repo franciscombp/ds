@@ -5,7 +5,7 @@ que se ponen con un atributo en la raíz. La usa [una.red](https://una.red), mal
 de WordPress de EL MERCIO.; cualquier proyecto puede clonarla o enlazarla.
 
 ```html
-<link rel="stylesheet" href="https://franciscombp.github.io/mal/ds/mal/mal.css">
+<link rel="stylesheet" href="https://franciscombp.github.io/ds/mal/mal.css">
 ```
 
 Las fuentes van dentro del paquete (`fonts/`) y el CSS las pide con rutas relativas, así
@@ -135,47 +135,44 @@ al anfitrión. Es lo que hace el tema de WordPress de EL MERCIO.
 
 ## De dónde sale
 
-El paquete vive en **[franciscombp/mal](https://github.com/franciscombp/mal)**, que es el
-repositorio del hub entero ([una.red](https://una.red)). El sistema es su carpeta `ds/`:
+Este repositorio, **[franciscombp/ds](https://github.com/franciscombp/ds)**, es el paquete
+entero: la raíz del repo es la raíz del sistema. Antes vivía en la carpeta `ds/` del repo del
+hub (`franciscombp/mal`); ahí queda solo la landing de [una.red](https://una.red).
 
 ```
-franciscombp/mal
-├── ds/            ← esto es el paquete
-│   ├── mal/       mal.css · mal.js · iconos.svg · compat.css · index.html (generado)
-│   ├── herramientas/  genera.mjs · plantilla.html
-│   ├── componentes.json   ← la fuente de verdad del catálogo
-│   └── fonts/
-├── apps/  img/  renuncia/  index.html   ← el resto del hub
+franciscombp/ds
+├── mal/           mal.css · mal.js · iconos.svg · compat.css · index.html (generado)
+├── herramientas/  genera.mjs · plantilla.html
+├── componentes.json   ← la fuente de verdad del catálogo
+├── demos/  fonts/  img/
+└── version.js · version.json
 ```
-
-**una.red es producción**: lo que sirve el dominio y lo que hay en `main` son lo mismo.
 
 ## Usarlo dentro de tu repo
 
 Por CDN, sin clonar nada y con la versión clavada:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/franciscombp/mal@main/ds/mal/mal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/franciscombp/ds@main/mal/mal.css">
 ```
 
-Como submódulo, si quieres que se actualice solo — ojo con la ruta, el paquete
-está **dentro** del repo:
+Como submódulo, si quieres que se actualice solo:
 
 ```bash
-git submodule add https://github.com/franciscombp/mal vendor/mal
+git submodule add https://github.com/franciscombp/ds vendor/ds
 ```
 
 ```html
-<link rel="stylesheet" href="/vendor/mal/ds/mal/mal.css">
+<link rel="stylesheet" href="/vendor/ds/mal/mal.css">
 ```
 
-O copiando solo la carpeta que necesitas:
+O copiando solo lo que necesitas:
 
 ```bash
-git clone --depth 1 https://github.com/franciscombp/mal /tmp/mal && cp -R /tmp/mal/ds ds
+git clone --depth 1 https://github.com/franciscombp/ds /tmp/ds && cp -R /tmp/ds/mal mal && cp -R /tmp/ds/fonts fonts
 ```
 
-⚠️ **Si lo sirves tú, copia también `ds/.htaccess`.** Es quien manda
+⚠️ **Si lo sirves tú, copia también `.htaccess`.** Es quien manda
 `Access-Control-Allow-Origin: *`, y `@font-face` aplica CORS **siempre**: sin esa cabecera
 la hoja carga pero las fuentes y el sprite de iconos fallan **en silencio**, y el sitio cae
 a las tipografías del sistema sin avisar de nada.
@@ -240,9 +237,9 @@ servir: `main` sigue siendo lo que sirve una.red, sin build.
 - **Nada de emojis en la interfaz**: para eso está el sprite.
 - **`mal/index.html` es generado.** Un componente se toca en `componentes.json` y se corre
   `npm run genera`. Editar el HTML a mano lo deja desviado hasta la siguiente generación.
-- **Todo el sitio enlaza en relativo**, nunca en absoluto desde la raíz (`href="ds/"`, no
-  `href="/ds/"`). Así una misma página funciona igual en `una.red` (raíz de dominio) y en
-  un *project site* de GitHub Pages, que cuelga de un subdirectorio (`/mal/`). La única
+- **Todo el sitio enlaza en relativo**, nunca en absoluto desde la raíz (`href="mal/"`, no
+  `href="/mal/"`). Así una misma página funciona igual en la raíz de un dominio y en
+  un *project site* de GitHub Pages, que cuelga de un subdirectorio (`/ds/`). La única
   excepción es `404.html`: el servidor lo devuelve para cualquier ruta rota, a cualquier
   profundidad, así que necesita rutas absolutas para resolver bien sin importar desde dónde
   falló la petición.

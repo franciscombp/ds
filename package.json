@@ -2,10 +2,10 @@
   "name": "mal-ds",
   "version": "1.0.18",
   "description": "El sistema de diseño de MAL: un CSS, cuatro temas (la marca, EL MERCIO., las apps y los juegos).",
-  "homepage": "https://franciscombp.github.io/mal/ds/",
+  "homepage": "https://franciscombp.github.io/ds/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/franciscombp/mal.git",
+    "url": "git+https://github.com/franciscombp/ds.git",
     "directory": "ds"
   },
   "author": "Francisco Maldonado",

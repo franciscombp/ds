@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════════════════════════
    MAL DS · comportamientos
-   https://franciscombp.github.io/mal/ds/mal/mal.js
+   https://franciscombp.github.io/ds/mal/mal.js
 
    El JavaScript de los componentes que no se resuelven solo con CSS.
    Tres reglas:
@@ -10,7 +10,7 @@
      · Respeta `prefers-reduced-motion`: lo que se mueve solo, se para.
 
    Uso:
-       <script src="https://franciscombp.github.io/mal/ds/mal/mal.js" defer></script>
+       <script src="https://franciscombp.github.io/ds/mal/mal.js" defer></script>
 
    Arranque manual:
        <script src="…/mal.js" data-mal-auto="no" defer></script>
@@ -29,7 +29,7 @@
   const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $$ = (sel, raiz) => Array.from((raiz || document).querySelectorAll(sel));
   const guion = document.currentScript;
-  const fuente = guion && guion.src ? guion.src : '/ds/mal/mal.js';
+  const fuente = guion && guion.src ? guion.src : 'mal/mal.js';
   const base = fuente.replace(/mal\.js(\?.*)?$/, '');
   /* Si el <script> viene sellado (`mal.js?v=1.0.14`), el sprite se pide con
      el MISMO sello. Sin esto, una página que estrena versión seguiría
