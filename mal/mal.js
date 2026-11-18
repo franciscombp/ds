@@ -118,9 +118,131 @@
     });
     $$('dialog.modal', raiz).forEach((d) => {
       d.addEventListener('click', (e) => {
+        if (recienArrastrada.has(d)) return;
         const r = d.getBoundingClientRect();
         const fuera = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
         if (fuera) d.close();
+      });
+    });
+  }
+
+  /* ─── hoja que se arrastra (<dialog class="modal modal--hoja">) ──
+     Mejora progresiva sobre la hoja de CSS, que ya abre y cierra sola:
+     aquí solo se añade el gesto. La hoja sigue al dedo, se resiste al
+     tirar más allá del tope, al soltar va a la parada más cercana
+     contando la velocidad (un golpe rápido hacia abajo la cierra), y el
+     fondo se oscurece en proporción a lo que sube. Si el contenido tiene
+     scroll, el gesto solo pasa a la hoja cuando el scroll está arriba.
+       data-alturas="50"   abre a media altura (50 % de la pantalla) y se
+                           estira hasta arriba tirando hacia arriba
+       data-arrastre="no"  la deja quieta, como sin JS
+     Todo se mueve con una variable (--hoja-y) y una clase (.arrastrando):
+     la geometría sigue en el CSS. */
+  const recienArrastrada = new WeakSet();
+  function hojas(raiz) {
+    $$('dialog.modal--hoja', raiz).forEach((d) => {
+      if (d.dataset.arrastre === 'no' || d.dataset.malHoja) return;
+      d.dataset.malHoja = '1';
+
+      const media = parseFloat(d.dataset.alturas) || 0;     // 0 = sin parada intermedia
+      const ALTO = 92;                                       // = max-height del CSS, en dvh
+      const yMedia = () => Math.max(0, d.offsetHeight - innerHeight * media / 100);
+      const reposo = () => { d.style.setProperty('--hoja-y', media ? `${ALTO - media}dvh` : '0px'); d.dataset.altura = media ? 'media' : 'alta'; };
+      reposo();
+      d.addEventListener('close', () => { d.classList.remove('arrastrando'); d.style.removeProperty('--hoja-fondo'); reposo(); });
+
+      /* resistencia de goma: cuanto más se tira, menos avanza */
+      const goma = (x) => x * 0.5 / (1 + x / 300);
+      const interactivo = 'input, textarea, select, [contenteditable], [data-no-arrastre]';
+
+      let ini = null;   // { y, x, base, scroll, t } del gesto en curso
+      let modo = '';    // '' por decidir · 'hoja' · 'nada'
+      let y = 0, vel = 0, tUlt = 0, yUlt = 0;
+
+      const pon = (off) => {
+        const H = d.offsetHeight;
+        y = off < 0 ? -goma(-off) : off;
+        d.style.setProperty('--hoja-y', `${y}px`);
+        const tope = media ? yMedia() : 0;                   // el fondo es pleno desde la primera parada
+        d.style.setProperty('--hoja-fondo', String(Math.max(0, Math.min(1, 1 - (y - tope) / (H - tope)))));
+      };
+
+      const empezar = (cy, cx, objetivo) => {
+        if (!d.open || objetivo.closest(interactivo)) { ini = null; return; }
+        const base = d.dataset.altura === 'media' ? yMedia() : 0;
+        ini = { y: cy, x: cx, base, scroll: d.scrollTop }; modo = '';
+        tUlt = performance.now(); yUlt = cy; vel = 0;
+      };
+
+      /* devuelve true si el gesto es de la hoja (y hay que frenar el scroll) */
+      const mover = (cy, cx) => {
+        if (!ini) return false;
+        const dy = cy - ini.y;
+        if (!modo) {
+          if (Math.abs(dy) < 6 && Math.abs(cx - ini.x) < 6) return false;
+          if (Math.abs(cx - ini.x) > Math.abs(dy)) modo = 'nada';                  // gesto horizontal: un carrusel
+          else if (d.dataset.altura === 'media') modo = 'hoja';                    // a media altura, todo mueve la hoja
+          else modo = dy > 0 && d.scrollTop <= 0 ? 'hoja' : 'nada';                // arriba: solo si el scroll está arriba
+          if (modo === 'hoja') { d.classList.add('arrastrando'); ini.y = cy; }
+        }
+        if (modo !== 'hoja') return false;
+        const ahora = performance.now();
+        const dt = ahora - tUlt;
+        if (dt > 0) vel = 0.8 * ((cy - yUlt) / dt) + 0.2 * vel;                    // px/ms, suavizada
+        tUlt = ahora; yUlt = cy;
+        pon(ini.base + (cy - ini.y));
+        return true;
+      };
+
+      const soltar = () => {
+        if (!ini) return;
+        const eraHoja = modo === 'hoja';
+        ini = null; modo = '';
+        if (!eraHoja) return;
+        recienArrastrada.add(d); setTimeout(() => recienArrastrada.delete(d), 400);
+        if (performance.now() - tUlt > 80) vel = 0;                                // se paró antes de soltar
+        const H = d.offsetHeight;
+        const paradas = media ? [0, yMedia()] : [0];
+        const lanzado = y + vel * 220;                                             // adonde iría con su inercia
+        let destino = paradas.reduce((a, b) => (Math.abs(b - lanzado) < Math.abs(a - lanzado) ? b : a));
+        const ultima = paradas[paradas.length - 1];
+        if (lanzado > ultima + (H - ultima) / 2 || (vel > 0.9 && y > ultima - 20)) destino = H;
+        d.classList.remove('arrastrando');
+        if (destino >= H) {
+          d.style.setProperty('--hoja-fondo', '0');
+          d.style.setProperty('--hoja-y', `${H}px`);
+          let hecho = false;
+          const cerrar = () => { if (hecho) return; hecho = true; d.close(); };
+          d.addEventListener('transitionend', (e) => { if (e.target === d && e.propertyName === 'transform') cerrar(); }, { once: true });
+          setTimeout(cerrar, quieto ? 0 : 450);
+        } else {
+          d.style.setProperty('--hoja-y', `${destino}px`);
+          d.style.setProperty('--hoja-fondo', '1');
+          d.dataset.altura = destino === 0 ? 'alta' : 'media';
+        }
+      };
+
+      /* dedo: eventos táctiles, porque solo ellos dejan frenar el scroll
+         de iOS a mitad de gesto (passive:false + preventDefault) */
+      d.addEventListener('touchstart', (e) => { if (e.touches.length === 1) empezar(e.touches[0].clientY, e.touches[0].clientX, e.target); }, { passive: true });
+      d.addEventListener('touchmove', (e) => { if (mover(e.touches[0].clientY, e.touches[0].clientX) && e.cancelable) e.preventDefault(); }, { passive: false });
+      d.addEventListener('touchend', soltar);
+      d.addEventListener('touchcancel', soltar);
+
+      /* ratón: solo desde la barrita o la cabecera, como un tirador */
+      d.addEventListener('pointerdown', (e) => {
+        if (e.pointerType !== 'mouse' || e.button !== 0) return;
+        const r = d.getBoundingClientRect();
+        const enTirador = e.clientY - r.top < 28 || e.target.closest('.modal__cab');
+        if (!enTirador || e.target.closest('button, a')) return;
+        empezar(e.clientY, e.clientX, e.target);
+        if (!ini) return;
+        d.setPointerCapture(e.pointerId);
+        const mueve = (ev) => mover(ev.clientY, ev.clientX);
+        const suelta = () => { d.removeEventListener('pointermove', mueve); soltar(); };
+        d.addEventListener('pointermove', mueve);
+        d.addEventListener('pointerup', suelta, { once: true });
+        d.addEventListener('pointercancel', suelta, { once: true });
       });
     });
   }
@@ -445,7 +567,7 @@
   const init = (raiz) => {
     raiz = raiz || document;
     if (raiz.querySelector && raiz.querySelector('.icono, use[href^="#i-"]')) iconos();
-    pestanas(raiz); menus(raiz); modales(raiz); copiar(raiz); pasos(raiz); claves(raiz);
+    pestanas(raiz); menus(raiz); modales(raiz); hojas(raiz); copiar(raiz); pasos(raiz); claves(raiz);
     lectura(raiz); indice(raiz); carne(raiz); consola(raiz); acordeon(raiz); stepper(raiz);
     marquesina(raiz); carrusel(raiz); pila(raiz); mapaMental(raiz); cabeceraPrensa(raiz); alternar(raiz);
   };

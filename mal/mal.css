@@ -1,4 +1,4 @@
-/* mal-ds v1.0.23 · https://franciscombp.github.io/ds/ */
+/* mal-ds v1.0.24 · https://franciscombp.github.io/ds/ */
 /* ══════════════════════════════════════════════════════════════
    MAL DESIGN SYSTEM · v2
    https://franciscombp.github.io/ds/mal/mal.css
@@ -2073,8 +2073,10 @@ label.chip:has(input:checked){background:var(--mal-primary);border-color:var(--m
    funde a la vez. `@starting-style` pone el punto de partida al abrir y
    `allow-discrete` retiene el display y la capa superior hasta que
    termina de bajar. Donde falte eso, abre igual y cierra sin animar.
-   No se arrastra: el gesto no es web, se cierra con la ✕, con Escape,
-   con el gesto de atrás o tocando fuera (`closedby="any"` o mal.js). */
+   Se cierra con la ✕, con Escape, con el gesto de atrás o tocando fuera
+   (`closedby="any"` o mal.js). Con mal.js además se arrastra: sigue al
+   dedo moviendo --hoja-y y oscurece el fondo con --hoja-fondo; ver
+   `hojas()` allí. `data-alturas="50"` añade la parada a media altura. */
 .modal--hoja{
   --hoja-curva:cubic-bezier(.32,.72,0,1);
   margin:auto auto 0;width:100%;max-width:min(100%, 640px);
@@ -2084,14 +2086,22 @@ label.chip:has(input:checked){background:var(--mal-primary);border-color:var(--m
   transform:translateY(100%);
   transition:transform .3s var(--hoja-curva), overlay .3s allow-discrete, display .3s allow-discrete;
 }
-.modal--hoja[open]{animation:none;transform:none;transition-duration:.45s}
+.modal--hoja[open]{animation:none;transform:translateY(var(--hoja-y, 0px));transition-duration:.45s}
 @starting-style{.modal--hoja[open]{transform:translateY(100%)}}
 .modal--hoja::before{content:"";display:block;width:38px;height:4px;border-radius:999px;background:var(--mal-outline-2);margin:0 auto var(--mal-e2)}
 /* la cabecera se queda arriba si el contenido es largo */
 .modal--hoja .modal__cab{position:sticky;top:calc(-1 * var(--mal-e3));z-index:1;background:inherit;padding-block:var(--mal-e3)}
 .modal--hoja::backdrop{opacity:0;transition:opacity .3s, overlay .3s allow-discrete, display .3s allow-discrete}
-.modal--hoja[open]::backdrop{opacity:1;transition-duration:.45s}
+.modal--hoja[open]::backdrop{opacity:var(--hoja-fondo, 1);transition-duration:.45s}
 @starting-style{.modal--hoja[open]::backdrop{opacity:0}}
+/* con paradas, la hoja mide siempre lo máximo y a media altura asoma la
+   parte de arriba: el contenido no se desplaza hasta que se estira */
+.modal--hoja[data-alturas]{height:92dvh}
+.modal--hoja[data-altura="media"]{overflow:hidden}
+/* mientras el dedo la lleva, nada de transiciones: va pegada a él */
+.modal--hoja.arrastrando,.modal--hoja.arrastrando::backdrop{transition:none}
+.modal--hoja.arrastrando{user-select:none;-webkit-user-select:none}
+@media (hover:hover){.modal--hoja[data-mal-hoja]::before,.modal--hoja[data-mal-hoja] .modal__cab{cursor:grab}}
 /* la página de atrás no se desplaza mientras hay un modal abierto */
 :root:has(dialog.modal[open]){overflow:hidden}
 /* pista (tooltip), sin JS */
@@ -2375,9 +2385,12 @@ label.chip:has(input:checked){background:var(--mal-primary);border-color:var(--m
   min-height:var(--mal-tap);padding:var(--mal-e2) var(--mal-e4);color:inherit;text-decoration:none;
   background:none;border:0;width:100%;text-align:left;font:inherit;cursor:pointer;
 }
-.fila-app + .fila-app,.lista-agrupada li + li .fila-app{box-shadow:inset 0 var(--ref-borde) 0 var(--mal-outline)}
-.lista-agrupada li + li .fila-app{margin-left:calc(var(--mal-e4) + 40px + var(--mal-e3));padding-left:0;width:auto}
-.lista-agrupada li + li .fila-app.fila-app--sin-icono{margin-left:var(--mal-e4)}
+.fila-app + .fila-app{box-shadow:inset 0 var(--ref-borde) 0 var(--mal-outline)}
+/* en la lista agrupada el filete empieza donde empieza el texto, como en
+   iOS; la fila no se mueve (antes se desplazaba entera, icono incluido) */
+.lista-agrupada li + li .fila-app{position:relative}
+.lista-agrupada li + li .fila-app::before{content:"";position:absolute;top:0;right:0;left:calc(var(--mal-e4) + 40px + var(--mal-e3));height:var(--ref-borde);background:var(--mal-outline)}
+.lista-agrupada li + li .fila-app.fila-app--sin-icono::before{left:var(--mal-e4)}
 .fila-app:hover{background:var(--mal-surface-alt)}
 .fila-app:active{background:var(--mal-bg-2)}
 .fila-app__icono{width:40px;height:40px;border-radius:calc(10px * var(--ref-radio));display:grid;place-items:center;color:var(--mal-on-primary);background:var(--mal-primary);flex:none}
