@@ -1,4 +1,4 @@
-/* mal-ds v1.0.22 · https://franciscombp.github.io/ds/ */
+/* mal-ds v1.0.23 · https://franciscombp.github.io/ds/ */
 /* ══════════════════════════════════════════════════════════════
    MAL DESIGN SYSTEM · v2
    https://franciscombp.github.io/ds/mal/mal.css
@@ -2067,14 +2067,33 @@ label.chip:has(input:checked){background:var(--mal-primary);border-color:var(--m
 .modal__cab h2,.modal__cab h3{font-family:var(--mal-texto);font-size:var(--mal-t-h3);font-weight:700;letter-spacing:-.01em}
 .modal__cuerpo{padding:var(--mal-e4) var(--mal-e5);color:var(--mal-on-surface-2)}
 .modal__pie{display:flex;gap:var(--mal-e2);justify-content:flex-end;flex-wrap:wrap;padding:0 var(--mal-e5) var(--mal-e5)}
-/* …y la versión hoja, que sube desde abajo en el teléfono */
+/* …y la versión hoja, que sube desde abajo, como las de iOS.
+   Sin JS: es un <dialog> y lo anima CSS. Entra desde el borde de la
+   pantalla con la curva de las hojas de iOS y sale igual; el fondo se
+   funde a la vez. `@starting-style` pone el punto de partida al abrir y
+   `allow-discrete` retiene el display y la capa superior hasta que
+   termina de bajar. Donde falte eso, abre igual y cierra sin animar.
+   No se arrastra: el gesto no es web, se cierra con la ✕, con Escape,
+   con el gesto de atrás o tocando fuera (`closedby="any"` o mal.js). */
 .modal--hoja{
-  margin:auto 0 0;max-width:none;border-radius:calc(26px * var(--ref-radio)) calc(26px * var(--ref-radio)) 0 0;
-  padding-top:var(--mal-e3);
+  --hoja-curva:cubic-bezier(.32,.72,0,1);
+  margin:auto auto 0;width:100%;max-width:min(100%, 640px);
+  max-height:92dvh;overflow-y:auto;overscroll-behavior:contain;
+  border-bottom:0;border-radius:calc(26px * var(--ref-radio)) calc(26px * var(--ref-radio)) 0 0;
+  padding-top:var(--mal-e3);padding-bottom:env(safe-area-inset-bottom);
+  transform:translateY(100%);
+  transition:transform .3s var(--hoja-curva), overlay .3s allow-discrete, display .3s allow-discrete;
 }
+.modal--hoja[open]{animation:none;transform:none;transition-duration:.45s}
+@starting-style{.modal--hoja[open]{transform:translateY(100%)}}
 .modal--hoja::before{content:"";display:block;width:38px;height:4px;border-radius:999px;background:var(--mal-outline-2);margin:0 auto var(--mal-e2)}
-.modal--hoja[open]{animation:mal-hoja .28s var(--mal-ease)}
-@keyframes mal-hoja{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+/* la cabecera se queda arriba si el contenido es largo */
+.modal--hoja .modal__cab{position:sticky;top:calc(-1 * var(--mal-e3));z-index:1;background:inherit;padding-block:var(--mal-e3)}
+.modal--hoja::backdrop{opacity:0;transition:opacity .3s, overlay .3s allow-discrete, display .3s allow-discrete}
+.modal--hoja[open]::backdrop{opacity:1;transition-duration:.45s}
+@starting-style{.modal--hoja[open]::backdrop{opacity:0}}
+/* la página de atrás no se desplaza mientras hay un modal abierto */
+:root:has(dialog.modal[open]){overflow:hidden}
 /* pista (tooltip), sin JS */
 [data-pista]{position:relative}
 [data-pista]::after{

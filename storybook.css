@@ -1,4 +1,4 @@
-/* mal-ds v1.0.22 · https://franciscombp.github.io/ds/ */
+/* mal-ds v1.0.23 · https://franciscombp.github.io/ds/ */
 /* ══════════════════════════════════════════════════════════════
    MAL · chrome del storybook
    https://franciscombp.github.io/ds/storybook.css
@@ -141,7 +141,7 @@ body a{color:inherit}
   min-width:0;background:var(--sb-bg-100);border:1px solid var(--sb-border-100);border-radius:var(--sb-r-lg);
   padding:32px;position:relative;overflow:visible;
 }
-.sb-box > * + *{margin-top:16px}
+.sb-box > * + *:not(dialog){margin-top:16px}  /* un <dialog> se coloca solo: un margen lo descentra */
 .sb-label{
   position:absolute;top:16px;right:20px;z-index:2;pointer-events:none;font-family:var(--sb-mono);font-size:10px;
   text-transform:uppercase;letter-spacing:1px;color:var(--sb-text-faint);

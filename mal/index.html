@@ -19,8 +19,8 @@
 <link rel="preload" href="../fonts/syne.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <!-- primero el sistema que se documenta, después el chrome: ver storybook.css -->
-<link rel="stylesheet" href="mal.css?v=1.0.22">
-<link rel="stylesheet" href="../storybook.css?v=1.0.22">
+<link rel="stylesheet" href="mal.css?v=1.0.23">
+<link rel="stylesheet" href="../storybook.css?v=1.0.23">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -417,13 +417,16 @@
 </div><div class="sb-code"><button class="btn-copy" type="button">Copiar</button><pre>&lt;div style=&quot;position:relative;min-height:110px;background:var(--mal-surface-alt);border-radius:var(--mal-r)&quot;&gt;
   &lt;div class=&quot;barra-acciones&quot; style=&quot;position:absolute;bottom:16px;left:50%;transform:translateX(-50%)&quot;&gt;&lt;button class=&quot;btn btn--sm&quot; type=&quot;button&quot;&gt;&lt;svg class=&quot;icono icono--s&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#i-editar&quot;/&gt;&lt;/svg&gt;Editar&lt;/button&gt;&lt;button class=&quot;btn btn--sm&quot; type=&quot;button&quot;&gt;&lt;svg class=&quot;icono icono--s&quot; aria-hidden=&quot;true&quot;&gt;&lt;use href=&quot;#i-compartir&quot;/&gt;&lt;/svg&gt;Compartir&lt;/button&gt;&lt;button class=&quot;btn btn--rojo btn--sm&quot; type=&quot;button&quot;&gt;Publicar&lt;/button&gt;
   &lt;/div&gt;
-&lt;/div&gt;</pre></div></div></div></section><section class="sb-section" id="retro"><h2 class="sb-section-title"><span>11</span> Retroalimentación</h2><p class="sb-section-intro">Toast, modal, hoja, pista, progreso, carga y estado vacío. El modal es un <code class="sb-inline">&lt;dialog&gt;</code>: el navegador pone el foco y cierra con Escape.</p><div class="sb-grid sb-grid--ancha"><div class="sb-box"><span class="sb-label">Toast y modal</span><h3 class="sb-box__t">Pruébalos</h3><div class="fila"><button class="btn" type="button" onclick="malDS.aviso('Guardado', 'ok')">Toast de éxito</button><button class="btn" type="button" onclick="malDS.aviso('No se pudo guardar', 'error')">Toast de error</button><button class="btn btn--rojo" type="button" data-abre="#d-modal">Abrir modal</button><button class="btn" type="button" data-abre="#d-hoja">Abrir hoja</button></div><dialog class="modal" id="d-modal"><div class="modal__cab"><h3>¿Enviar a la papelera?</h3><button class="icon-btn" type="button" data-cierra aria-label="Cerrar" style="border:0;background:none"><svg class="icono" aria-hidden="true"><use href="#i-cerrar"/></svg></button></div><div class="modal__cuerpo">El artículo deja de verse en el sitio. Se puede recuperar durante 30 días.</div><div class="modal__pie"><button class="btn" type="button" data-cierra>Cancelar</button><button class="btn btn-danger" type="button" data-cierra>Enviar a la papelera</button></div></dialog><dialog class="modal modal--hoja" id="d-hoja"><div class="modal__cab"><h3>Agregar producto</h3></div><div class="modal__cuerpo"><div class="campo"><label for="h-precio">Precio</label><div class="grupo-entrada"><span class="grupo-entrada__fijo">$</span><input id="h-precio" type="text" inputmode="decimal" placeholder="0,00"></div></div></div><div class="modal__pie"><button class="btn btn--rojo btn-block" type="button" data-cierra>Guardar</button></div></dialog><div class="sb-code"><button class="btn-copy" type="button">Copiar</button><pre>&lt;button class=&quot;btn&quot; data-abre=&quot;#d-modal&quot;&gt;Abrir&lt;/button&gt;
+&lt;/div&gt;</pre></div></div></div></section><section class="sb-section" id="retro"><h2 class="sb-section-title"><span>11</span> Retroalimentación</h2><p class="sb-section-intro">Toast, modal, hoja, pista, progreso, carga y estado vacío. El modal es un <code class="sb-inline">&lt;dialog&gt;</code>: el navegador pone el foco y cierra con Escape.</p><div class="sb-grid sb-grid--ancha"><div class="sb-box"><span class="sb-label">Toast y modal</span><h3 class="sb-box__t">Pruébalos</h3><div class="fila"><button class="btn" type="button" onclick="malDS.aviso('Guardado', 'ok')">Toast de éxito</button><button class="btn" type="button" onclick="malDS.aviso('No se pudo guardar', 'error')">Toast de error</button><button class="btn btn--rojo" type="button" data-abre="#d-modal">Abrir modal</button><button class="btn" type="button" data-abre="#d-hoja">Abrir hoja</button></div><dialog class="modal" id="d-modal"><div class="modal__cab"><h3>¿Enviar a la papelera?</h3><button class="icon-btn" type="button" data-cierra aria-label="Cerrar" style="border:0;background:none"><svg class="icono" aria-hidden="true"><use href="#i-cerrar"/></svg></button></div><div class="modal__cuerpo">El artículo deja de verse en el sitio. Se puede recuperar durante 30 días.</div><div class="modal__pie"><button class="btn" type="button" data-cierra>Cancelar</button><button class="btn btn-danger" type="button" data-cierra>Enviar a la papelera</button></div></dialog><dialog class="modal modal--hoja" id="d-hoja" closedby="any"><div class="modal__cab"><h3>Agregar producto</h3><button class="icon-btn" type="button" data-cierra aria-label="Cerrar" style="border:0;background:none"><svg class="icono" aria-hidden="true"><use href="#i-cerrar"/></svg></button></div><div class="modal__cuerpo"><div class="campo"><label for="h-precio">Precio</label><div class="grupo-entrada"><span class="grupo-entrada__fijo">$</span><input id="h-precio" type="text" inputmode="decimal" placeholder="0,00"></div></div></div><div class="modal__pie"><button class="btn btn--rojo btn-block" type="button" data-cierra>Guardar</button></div></dialog><div class="sb-code"><button class="btn-copy" type="button">Copiar</button><pre>&lt;button class=&quot;btn&quot; data-abre=&quot;#d-modal&quot;&gt;Abrir&lt;/button&gt;
 
 &lt;dialog class=&quot;modal&quot; id=&quot;d-modal&quot;&gt;
   &lt;div class=&quot;modal__cab&quot;&gt;&lt;h3&gt;Título&lt;/h3&gt;&lt;/div&gt;
   &lt;div class=&quot;modal__cuerpo&quot;&gt;…&lt;/div&gt;
   &lt;div class=&quot;modal__pie&quot;&gt;&lt;button class=&quot;btn&quot; data-cierra&gt;Cerrar&lt;/button&gt;&lt;/div&gt;
 &lt;/dialog&gt;
+
+&lt;!-- la hoja: sube desde abajo; closedby=&quot;any&quot; cierra al tocar fuera --&gt;
+&lt;dialog class=&quot;modal modal--hoja&quot; id=&quot;d-hoja&quot; closedby=&quot;any&quot;&gt;…&lt;/dialog&gt;
 
 &lt;!-- y desde JS --&gt;
 malDS.aviso(&#x27;Guardado&#x27;, &#x27;ok&#x27;);
@@ -1374,7 +1377,7 @@ malDS.abrir(&#x27;#d-modal&#x27;);</pre></div></div></div><div class="sb-grid"><
   </footer>
 </main>
 
-<script src="mal.js?v=1.0.22" defer></script>
-<script src="../storybook.js?v=1.0.22" defer></script>
+<script src="mal.js?v=1.0.23" defer></script>
+<script src="../storybook.js?v=1.0.23" defer></script>
 </body>
 </html>
